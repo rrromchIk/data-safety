@@ -1,112 +1,134 @@
-<h2>Linear comparison based random numbers generator!</h2>
+<h2></h2>
 
 <form (submit)="submitForm()"
       [formGroup]="inputsForm"
       class="form">
 
-    <div class="form-group">
-        <label [for]="'a'">
-            Choose <b>a</b> parameter
-        </label>
+    <div class="form-content">
+        <div class="form-group">
+            <label [for]="'a'">
+                Choose <b>a</b> parameter
+            </label>
 
-        <p-inputNumber
-            formControlName="a"
-            mode="decimal"
-            [min]="0"/>
+            <p-inputNumber
+                    formControlName="a"
+                    mode="decimal"
+                    [min]="0"/>
 
-        @if (inputsForm.controls["a"].hasError('required') && isFormSubmitted) {
-            <small class="input-error-message">
-                <b>a</b> parameter is required
-            </small>
-        }
+            @if (inputsForm.controls["a"].hasError('required') && isFormSubmitted) {
+                <small class="input-error-message">
+                    <b>a</b> parameter is required
+                </small>
+            }
+        </div>
+
+        <div class="form-group">
+            <label [for]="'X0'">
+                Choose <b>X0</b> parameter
+            </label>
+
+            <p-inputNumber
+                    formControlName="X0"
+                    mode="decimal"
+                    [min]="0"/>
+
+            @if (inputsForm.controls["X0"].errors?.['required'] && isFormSubmitted) {
+                <small class="input-error-message">
+                    <b>X0</b> parameter is required
+                </small>
+            }
+        </div>
+
+        <div class="form-group">
+            <label [for]="'c'">
+                Choose <b>c</b> parameter
+            </label>
+
+            <p-inputNumber
+                    formControlName="c"
+                    mode="decimal"
+                    [min]="0"/>
+
+            @if (inputsForm.controls["c"].errors?.['required'] && isFormSubmitted) {
+                <small class="input-error-message">
+                    <b>c</b> parameter is required
+                </small>
+            }
+        </div>
+
+        <div class="form-group">
+            <label [for]="'m'">
+                Choose <b>m</b> parameter
+            </label>
+
+            <p-inputNumber
+                    formControlName="m"
+                    mode="decimal"
+                    [min]="0"/>
+
+            @if (inputsForm.controls["m"].errors?.['required'] && isFormSubmitted) {
+                <small class="input-error-message">
+                    <b>m</b> parameter is required
+                </small>
+            }
+        </div>
+
+        <div class="form-group">
+            <label [for]="'sequenceLength'">
+                Choose sequence length
+            </label>
+
+            <p-inputNumber
+                    formControlName="sequenceLength"
+                    mode="decimal"
+                    [min]="0"/>
+
+            @if (inputsForm.controls["sequenceLength"].errors?.['required'] && isFormSubmitted) {
+                <small class="input-error-message">
+                    <b>Numbers amount</b> parameter is required
+                </small>
+            }
+            @if (inputsForm.controls["sequenceLength"].errors?.['max'] && isFormSubmitted) {
+                <small class="input-error-message">
+                    <b>Numbers amount</b> can not be grater than 100000
+                </small>
+            }
+        </div>
     </div>
-    <div class="form-group">
-        <label [for]="'X0'">
-            Choose <b>X0</b> parameter
-        </label>
-
-        <p-inputNumber
-            formControlName="X0"
-            mode="decimal"
-            [min]="0"/>
-
-        @if (inputsForm.controls["X0"].errors?.['required'] && isFormSubmitted) {
-            <small class="input-error-message">
-                <b>X0</b> parameter is required
-            </small>
-        }
-    </div>
-
-    <div class="form-group">
-        <label [for]="'c'">
-            Choose <b>c</b> parameter
-        </label>
-
-        <p-inputNumber
-            formControlName="c"
-            mode="decimal"
-            [min]="0"/>
-
-        @if (inputsForm.controls["c"].errors?.['required'] && isFormSubmitted) {
-            <small class="input-error-message">
-                <b>c</b> parameter is required
-            </small>
-        }
-    </div>
-
-    <div class="form-group">
-        <label [for]="'m'">
-            Choose <b>m</b> parameter
-        </label>
-
-        <p-inputNumber
-            formControlName="m"
-            mode="decimal"
-            [min]="0"/>
-
-        @if (inputsForm.controls["m"].errors?.['required'] && isFormSubmitted) {
-            <small class="input-error-message">
-                <b>m</b> parameter is required
-            </small>
-        }
-    </div>
-
-    <div class="form-group">
-        <label [for]="'sequenceLength'">
-            Choose amount of random numbers to generate
-        </label>
-
-        <p-inputNumber
-            formControlName="sequenceLength"
-            mode="decimal"
-            [min]="0"/>
-
-        @if (inputsForm.controls["sequenceLength"].errors?.['required'] && isFormSubmitted) {
-            <small class="input-error-message">
-                <b>Numbers amount</b> parameter is required
-            </small>
-        }
-        @if (inputsForm.controls["sequenceLength"].errors?.['max'] && isFormSubmitted) {
-            <small class="input-error-message">
-                <b>Numbers amount</b> can not be grater than 100
-            </small>
-        }
-    </div>
-
-    <label>Result: </label>
-    <textarea [value]="randomNumbersSequence" rows="4" cols="50"></textarea>
-
 
     <div class="btn-group">
         <p-button (onClick)="resetForm()"
                   severity="secondary"
-                  styleClass="btn-form">
-            Reset
-        </p-button>
+                  styleClass="btn-form"
+                  [outlined]="true"
+                  label="Reset"/>
+
         <p-button styleClass="btn-form"
-                  type="submit">
-            Generate
-        </p-button>
+                  type="submit"
+                  label="Generate"/>
+
+        @if (randomNumbersSequence) {
+            <p-button icon="pi pi-download"
+                      [outlined]="true"
+                      label="Download results"
+                      severity="success"
+                      iconPos="right"
+                      (onClick)="onDownloadFile()"/>
+        }
+    </div>
+</form>
+
+<div class="results-container">
+    <div class="sequence-result">
+        <label>Pseudo random numbers sequence: </label>
+        <textarea pInputTextarea [value]="randomNumbersSequence" rows="4" cols="50"></textarea>
     </div>
 
-</form>
+    <div class="result">
+        <label>Period: </label>
+        <textarea pInputTextarea [value]="period" rows="2" cols="20"></textarea>
+    </div>
+</div>
+
+
+

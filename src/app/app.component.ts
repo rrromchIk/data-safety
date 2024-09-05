@@ -1,11 +1,13 @@
-import {Component, OnInit} from '@angular/core';
-import {RouterOutlet} from '@angular/router';
-import {Button} from "primeng/button";
-import {IconFieldModule} from "primeng/iconfield";
-import {InputIconModule} from "primeng/inputicon";
-import {InputTextModule} from "primeng/inputtext";
-import {PrimeNGConfig} from "primeng/api";
-import {DividerModule} from "primeng/divider";
+import { Component, OnInit } from "@angular/core";
+import { RouterOutlet } from "@angular/router";
+import { Button } from "primeng/button";
+import { IconFieldModule } from "primeng/iconfield";
+import { InputIconModule } from "primeng/inputicon";
+import { InputTextModule } from "primeng/inputtext";
+import { PrimeNGConfig } from "primeng/api";
+import { DividerModule } from "primeng/divider";
+import { AccordionModule } from "primeng/accordion";
+import { PseudoRandomNumbersComponent } from "./pages/pseudo-random-numbers/pseudo-random-numbers.component";
 
 @Component({
     selector: "app-root",
@@ -17,17 +19,16 @@ import {DividerModule} from "primeng/divider";
         InputIconModule,
         InputTextModule,
         DividerModule,
+        AccordionModule,
+        PseudoRandomNumbersComponent,
     ],
     templateUrl: "./app.component.html",
     styleUrl: "./app.component.scss",
 })
 export class AppComponent implements OnInit {
-    title = "data-safety";
-
     constructor(private primengConfig: PrimeNGConfig) {}
 
     public ngOnInit(): void {
-        console.log(Number.MAX_SAFE_INTEGER);
         this.primengConfig.ripple = true;
     }
 }

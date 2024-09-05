@@ -1,4 +1,9 @@
 <h1>Programs and data safety</h1>
 
 <p-divider layout="horizontal"/>
-<router-outlet/>
+
+<p-accordion [activeIndex]="0">
+    <p-accordionTab header="Linear comparison based random numbers generator">
+        <app-pseudo-random-numbers/>
+    </p-accordionTab>
+</p-accordion>
