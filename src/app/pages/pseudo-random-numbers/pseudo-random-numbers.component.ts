@@ -5,15 +5,25 @@ import {
     ReactiveFormsModule,
     Validators,
 } from "@angular/forms";
-import { generateRandomNumbers } from "../../core/utils/linear-comparison-random-numbers-generator";
+import {
+    calculatePeriod,
+    generateRandomNumbers,
+} from "../../core/utils/linear-comparison-random-numbers-generator";
 import { InputNumberModule } from "primeng/inputnumber";
 import { Button } from "primeng/button";
 import { AccordionModule } from "primeng/accordion";
+import { InputTextareaModule } from "primeng/inputtextarea";
 
 @Component({
     selector: "app-pseudo-random-numbers",
     standalone: true,
-    imports: [ReactiveFormsModule, InputNumberModule, Button, AccordionModule],
+    imports: [
+        ReactiveFormsModule,
+        InputNumberModule,
+        Button,
+        AccordionModule,
+        InputTextareaModule,
+    ],
     templateUrl: "./pseudo-random-numbers.component.html",
     styleUrl: "./pseudo-random-numbers.component.scss",
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,6 +33,7 @@ export class PseudoRandomNumbersComponent implements OnInit {
     public isFormSubmitted: boolean = false;
 
     public randomNumbersSequence: number[] | null = null;
+    public period: number | null = null;
 
     constructor(private readonly fb: FormBuilder) {}
 
@@ -37,8 +48,12 @@ export class PseudoRandomNumbersComponent implements OnInit {
             c: [377, [Validators.min(0), Validators.required]],
             m: [2 ** 23 - 1, [Validators.min(1), Validators.required]],
             sequenceLength: [
-                "",
-                [Validators.min(0), Validators.max(100), Validators.required],
+                "10",
+                [
+                    Validators.min(0),
+                    Validators.max(100000),
+                    Validators.required,
+                ],
             ],
         });
     }
@@ -56,7 +71,12 @@ export class PseudoRandomNumbersComponent implements OnInit {
                 this.inputsForm.value.sequenceLength,
             );
 
-            console.log(this.randomNumbersSequence);
+            this.period = calculatePeriod(
+                this.inputsForm.value.a,
+                this.inputsForm.value.X0,
+                this.inputsForm.value.c,
+                this.inputsForm.value.m,
+            );
         } else {
             this.inputsForm.markAllAsTouched();
         }
@@ -65,6 +85,19 @@ export class PseudoRandomNumbersComponent implements OnInit {
     public resetForm(): void {
         this.isFormSubmitted = false;
         this.randomNumbersSequence = null;
+        this.period = null;
         this.initializeForm();
+    }
+
+    public onDownloadFile(): void {
+        const json = JSON.stringify({
+            "pseudo random numbers sequence": this.randomNumbersSequence,
+            period: this.period,
+        });
+        const blob = new Blob([json], { type: "application/json" });
+        const a = document.createElement("a");
+        a.href = window.URL.createObjectURL(blob);
+        a.download = "result.json";
+        a.click();
     }
 }
