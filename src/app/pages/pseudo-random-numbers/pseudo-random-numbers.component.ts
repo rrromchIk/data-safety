@@ -10,10 +10,6 @@ import {
     ReactiveFormsModule,
     Validators,
 } from "@angular/forms";
-import {
-    calculatePeriod,
-    generateRandomNumbers,
-} from "../../core/utils/linear-comparison-random-numbers-generator";
 import { InputNumberModule } from "primeng/inputnumber";
 import { Button } from "primeng/button";
 import { AccordionModule } from "primeng/accordion";
@@ -22,6 +18,8 @@ import { parametersFormValidator } from "../../core/helpers/validators/linear-co
 import { NgIf } from "@angular/common";
 import { ProgressSpinnerModule } from "primeng/progressspinner";
 import { SpinnerService } from "../../shared/services/spinner.service";
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { finalize } from "rxjs";
 
 @Component({
     selector: "app-pseudo-random-numbers",
@@ -45,12 +43,12 @@ export class PseudoRandomNumbersComponent implements OnInit {
 
     public randomNumbersSequence: number[] | null = null;
     public period: number | null = null;
-    public isLoading: boolean = false;
 
     constructor(
         private readonly fb: FormBuilder,
         private readonly spinnerService: SpinnerService,
         private readonly cdr: ChangeDetectorRef,
+        private readonly http: HttpClient,
     ) {}
 
     public ngOnInit(): void {
@@ -85,24 +83,28 @@ export class PseudoRandomNumbersComponent implements OnInit {
         if (this.inputsForm.valid) {
             this.spinnerService.showSpinner();
 
-            setTimeout(() => {
-                this.randomNumbersSequence = generateRandomNumbers(
-                    this.inputsForm.value.a,
-                    this.inputsForm.value.X0,
-                    this.inputsForm.value.c,
-                    this.inputsForm.value.m,
-                    this.inputsForm.value.sequenceLength,
-                );
+            let params = new HttpParams();
+            params = params.set("A", this.inputsForm.value.a);
+            params = params.set("X0", this.inputsForm.value.X0);
+            params = params.set("C", this.inputsForm.value.c);
+            params = params.set("M", this.inputsForm.value.m);
+            params = params.set(
+                "SequenceLength",
+                this.inputsForm.value.sequenceLength,
+            );
 
-                this.period = calculatePeriod(
-                    this.inputsForm.value.a,
-                    this.inputsForm.value.X0,
-                    this.inputsForm.value.c,
-                    this.inputsForm.value.m,
-                );
-                this.cdr.detectChanges();
-                this.spinnerService.hideSpinner();
-            }, 1000);
+            this.http
+                .get("https://localhost:5001/pseudo-random-numbers", { params })
+                .pipe(
+                    finalize(() => {
+                        this.spinnerService.hideSpinner();
+                    }),
+                )
+                .subscribe((res: any) => {
+                    this.randomNumbersSequence = res.pseudoRandomNumbers;
+                    this.period = res.period;
+                    this.cdr.detectChanges();
+                });
         } else {
             this.inputsForm.markAllAsTouched();
         }
@@ -113,17 +115,5 @@ export class PseudoRandomNumbersComponent implements OnInit {
         this.randomNumbersSequence = null;
         this.period = null;
         this.initializeForm();
-    }
-
-    public onDownloadFile(): void {
-        const json = JSON.stringify({
-            "pseudo random numbers sequence": this.randomNumbersSequence,
-            period: this.period,
-        });
-        const blob = new Blob([json], { type: "application/json" });
-        const a = document.createElement("a");
-        a.href = window.URL.createObjectURL(blob);
-        a.download = "result.json";
-        a.click();
     }
 }
