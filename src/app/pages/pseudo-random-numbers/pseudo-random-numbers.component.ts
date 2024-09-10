@@ -13,6 +13,8 @@ import { InputNumberModule } from "primeng/inputnumber";
 import { Button } from "primeng/button";
 import { AccordionModule } from "primeng/accordion";
 import { InputTextareaModule } from "primeng/inputtextarea";
+import { parametersFormValidator } from "../../core/helpers/validators/linear-comparison-parameters-form.validator";
+import { NgIf } from "@angular/common";
 
 @Component({
     selector: "app-pseudo-random-numbers",
@@ -23,6 +25,7 @@ import { InputTextareaModule } from "primeng/inputtextarea";
         Button,
         AccordionModule,
         InputTextareaModule,
+        NgIf,
     ],
     templateUrl: "./pseudo-random-numbers.component.html",
     styleUrl: "./pseudo-random-numbers.component.scss",
@@ -42,25 +45,29 @@ export class PseudoRandomNumbersComponent implements OnInit {
     }
 
     private initializeForm(): void {
-        this.inputsForm = this.fb.group({
-            a: [10 ** 3, [Validators.min(0), Validators.required]],
-            X0: [7, [Validators.min(0), Validators.required]],
-            c: [377, [Validators.min(0), Validators.required]],
-            m: [2 ** 23 - 1, [Validators.min(1), Validators.required]],
-            sequenceLength: [
-                "10",
-                [
-                    Validators.min(0),
-                    Validators.max(100000),
-                    Validators.required,
+        this.inputsForm = this.fb.group(
+            {
+                a: [10 ** 3, [Validators.min(0), Validators.required]],
+                X0: [7, [Validators.min(0), Validators.required]],
+                c: [377, [Validators.min(0), Validators.required]],
+                m: [2 ** 23 - 1, [Validators.min(1), Validators.required]],
+                sequenceLength: [
+                    "10",
+                    [
+                        Validators.min(0),
+                        Validators.max(100000),
+                        Validators.required,
+                    ],
                 ],
-            ],
-        });
+            },
+            {
+                validators: parametersFormValidator,
+            },
+        );
     }
 
     public submitForm(): void {
         this.isFormSubmitted = true;
-        console.log(this.inputsForm);
 
         if (this.inputsForm.valid) {
             this.randomNumbersSequence = generateRandomNumbers(

@@ -20,6 +20,9 @@
                     <b>a</b> parameter is required
                 </small>
             }
+            @if(inputsForm.hasError('aOutOfRange')) {
+                <b>a</b> must be less than <b>m</b>
+            }
         </div>
 
         <div class="form-group">
@@ -37,6 +40,9 @@
                     <b>X0</b> parameter is required
                 </small>
             }
+            @if(inputsForm.hasError('X0OutOfRange')) {
+                <b>X0</b> must be less than <b>m</b>
+            }
         </div>
 
         <div class="form-group">
@@ -53,6 +59,9 @@
                 <small class="input-error-message">
                     <b>c</b> parameter is required
                 </small>
+            }
+            @if(inputsForm.hasError('cOutOfRange')) {
+                <b>c</b> must be less than <b>m</b>
             }
         </div>
 
