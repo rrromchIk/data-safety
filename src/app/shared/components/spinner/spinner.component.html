@@ -1,0 +1,6 @@
+<div *ngIf="spinnerService.showSpinner$ | async"
+     class="spinner-container">
+  <p-progressSpinner strokeWidth="4"
+                     animationDuration="1s"
+                     [styleClass]="'custom-spinner'"></p-progressSpinner>
+</div>

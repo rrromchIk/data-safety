@@ -8,3 +8,28 @@
         font-size: 14px;
     }
 }
+
+.spinner-container {
+    position: absolute;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(16, 24, 40, 0.19);;
+
+    .p-progress-spinner{
+        width: 8rem;
+        height: 9rem;
+
+        .p-progress-spinner-circle {
+            // The color doesn't change in any other way
+            stroke: gray !important;
+        }
+    }
+}
+

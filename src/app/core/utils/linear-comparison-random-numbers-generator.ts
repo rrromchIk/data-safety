@@ -26,12 +26,12 @@ export function calculatePeriod(
     c: number = 31,
     m: number = 2 ** 31 - 1,
 ): number {
-    const set: Set<number> = new Set<number>();
     let Xn: number = X0;
     let period: number = 0;
+    Xn = (a * Xn + c) % m;
+    period++;
 
-    while (!set.has(Xn)) {
-        set.add(Xn);
+    while (Xn !== X0) {
         Xn = (a * Xn + c) % m;
         period++;
     }

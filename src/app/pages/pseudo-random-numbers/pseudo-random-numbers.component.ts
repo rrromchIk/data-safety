@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnInit,
+} from "@angular/core";
 import {
     FormBuilder,
     FormGroup,
@@ -15,6 +20,8 @@ import { AccordionModule } from "primeng/accordion";
 import { InputTextareaModule } from "primeng/inputtextarea";
 import { parametersFormValidator } from "../../core/helpers/validators/linear-comparison-parameters-form.validator";
 import { NgIf } from "@angular/common";
+import { ProgressSpinnerModule } from "primeng/progressspinner";
+import { SpinnerService } from "../../shared/services/spinner.service";
 
 @Component({
     selector: "app-pseudo-random-numbers",
@@ -26,6 +33,7 @@ import { NgIf } from "@angular/common";
         AccordionModule,
         InputTextareaModule,
         NgIf,
+        ProgressSpinnerModule,
     ],
     templateUrl: "./pseudo-random-numbers.component.html",
     styleUrl: "./pseudo-random-numbers.component.scss",
@@ -37,8 +45,13 @@ export class PseudoRandomNumbersComponent implements OnInit {
 
     public randomNumbersSequence: number[] | null = null;
     public period: number | null = null;
+    public isLoading: boolean = false;
 
-    constructor(private readonly fb: FormBuilder) {}
+    constructor(
+        private readonly fb: FormBuilder,
+        private readonly spinnerService: SpinnerService,
+        private readonly cdr: ChangeDetectorRef,
+    ) {}
 
     public ngOnInit(): void {
         this.initializeForm();
@@ -70,20 +83,26 @@ export class PseudoRandomNumbersComponent implements OnInit {
         this.isFormSubmitted = true;
 
         if (this.inputsForm.valid) {
-            this.randomNumbersSequence = generateRandomNumbers(
-                this.inputsForm.value.a,
-                this.inputsForm.value.X0,
-                this.inputsForm.value.c,
-                this.inputsForm.value.m,
-                this.inputsForm.value.sequenceLength,
-            );
+            this.spinnerService.showSpinner();
 
-            this.period = calculatePeriod(
-                this.inputsForm.value.a,
-                this.inputsForm.value.X0,
-                this.inputsForm.value.c,
-                this.inputsForm.value.m,
-            );
+            setTimeout(() => {
+                this.randomNumbersSequence = generateRandomNumbers(
+                    this.inputsForm.value.a,
+                    this.inputsForm.value.X0,
+                    this.inputsForm.value.c,
+                    this.inputsForm.value.m,
+                    this.inputsForm.value.sequenceLength,
+                );
+
+                this.period = calculatePeriod(
+                    this.inputsForm.value.a,
+                    this.inputsForm.value.X0,
+                    this.inputsForm.value.c,
+                    this.inputsForm.value.m,
+                );
+                this.cdr.detectChanges();
+                this.spinnerService.hideSpinner();
+            }, 1000);
         } else {
             this.inputsForm.markAllAsTouched();
         }
