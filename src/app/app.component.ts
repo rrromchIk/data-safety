@@ -9,6 +9,7 @@ import { DividerModule } from "primeng/divider";
 import { AccordionModule } from "primeng/accordion";
 import { PseudoRandomNumbersComponent } from "./pages/pseudo-random-numbers/pseudo-random-numbers.component";
 import { SpinnerComponent } from "./shared/components/spinner/spinner.component";
+import {Md5HashComponent} from "./pages/md5-hash/md5-hash.component";
 
 @Component({
     selector: "app-root",
@@ -23,6 +24,7 @@ import { SpinnerComponent } from "./shared/components/spinner/spinner.component"
         AccordionModule,
         PseudoRandomNumbersComponent,
         SpinnerComponent,
+        Md5HashComponent,
     ],
     templateUrl: "./app.component.html",
     styleUrl: "./app.component.scss",

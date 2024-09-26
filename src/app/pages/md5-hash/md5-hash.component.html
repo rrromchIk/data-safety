@@ -1,0 +1,53 @@
+<div class="container">
+    <div class="string-hash">
+        <label>
+            Enter string
+        </label>
+        <input type="text" pInputText [(ngModel)]="stringToHash"/>
+        <p-button label="Compute hash" (onClick)="computeHashForString()"/>
+
+        <label>String hash</label>
+        <textarea pInputTextarea [value]="hashedString" rows="4" cols="50"></textarea>
+    </div>
+
+
+    <div class="file-hash">
+        <label>Choose file to hash</label>
+        <input
+            id="fileToHashInput"
+            type="file"
+            (change)="onFileToHashSelected($event)">
+
+        <p-button label="Compute hash" (onClick)="computeHashForFile()"/>
+
+        <label>File hash</label>
+        <textarea pInputTextarea [value]="hashedFile" rows="4" cols="50"></textarea>
+    </div>
+
+    <div class="file-data-integrity">
+        <div class="choose-files-group">
+            <div class="choose-file-group">
+                <label>Choose file to check data integrity</label>
+                <input
+                    id="fileToCheckIntegrity"
+                    type="file"
+                    (change)="onFileToCheckIntegritySelected($event)">
+            </div>
+            <div class="choose-file-group">
+                <label>Choose .md5 file</label>
+                <input
+                    id="md5file"
+                    type="file"
+                    accept=".md5"
+                    (change)="onMd5FileSelected($event)">
+            </div>
+        </div>
+
+        <p-button label="Check integrity" (onClick)="checkFileIntegrity()"/>
+
+        <label>Result</label>
+        <textarea pInputTextarea [value]="checkIntegrityResult" rows="4" cols="50"></textarea>
+    </div>
+</div>
+
+<p-toast/>
