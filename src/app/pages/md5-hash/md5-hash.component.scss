@@ -1,0 +1,38 @@
+.container {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+
+
+    .string-hash {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .file-hash {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .file-data-integrity {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        .choose-files-group {
+            display: flex;
+            flex-direction: row;
+
+            .choose-file-group {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+
+
+    }
+}
+
+
