@@ -3,12 +3,12 @@ import {Button} from "primeng/button";
 import {InputTextModule} from "primeng/inputtext";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {finalize, Subject} from "rxjs";
+import {finalize, Subject, takeUntil} from "rxjs";
 import {SpinnerService} from "../../shared/services/spinner.service";
-import {MessageService} from "primeng/api";
 import {ToastModule} from "primeng/toast";
 import {InputTextareaModule} from "primeng/inputtextarea";
 import {FileUploadModule} from "primeng/fileupload";
+import {NotificationService} from "../../shared/services/notification.service";
 
 @Component({
     selector: 'app-md5-hash',
@@ -43,7 +43,7 @@ export class Md5HashComponent implements OnDestroy {
     constructor(private readonly http: HttpClient,
                 private readonly spinnerService: SpinnerService,
                 private readonly cdr: ChangeDetectorRef,
-                private messageService: MessageService) {
+                private readonly notificationService: NotificationService) {
     }
 
     public ngOnDestroy(): void {
@@ -58,20 +58,21 @@ export class Md5HashComponent implements OnDestroy {
         this.http
             .get<string>("https://localhost:5001/hash/string", {params})
             .pipe(
+                takeUntil(this.unsubscribe$),
                 finalize(() => {
                     this.spinnerService.hideSpinner();
                 }),
             )
             .subscribe((res: string) => {
                 this.hashedString = res;
-                this.showSuccessNotification('Hash for string computed successfully');
+                this.notificationService.showSuccessNotification('Hash for string computed successfully');
                 this.cdr.detectChanges();
             });
     }
 
     public computeHashForFile(): void {
         if (!this.chosenFileNameToHash) {
-            this.showErrorNotification('Choose file to hash');
+            this.notificationService.showErrorNotification('Choose file to hash');
             return;
         }
 
@@ -81,6 +82,7 @@ export class Md5HashComponent implements OnDestroy {
         this.http
             .get<string>("https://localhost:5001/hash/file", {params})
             .pipe(
+                takeUntil(this.unsubscribe$),
                 finalize(() => {
                     this.spinnerService.hideSpinner();
                 }),
@@ -88,11 +90,11 @@ export class Md5HashComponent implements OnDestroy {
             .subscribe({
                 next: (res: string) => {
                     this.hashedFile = res;
-                    this.showSuccessNotification('Hash for file computed successfully');
+                    this.notificationService.showSuccessNotification('Hash for file computed successfully');
                     this.cdr.detectChanges();
                 },
                 error: (err) => {
-                    this.showErrorNotification(err.error.detail);
+                    this.notificationService.showErrorNotification(err.error.detail);
                 }
             });
     }
@@ -121,7 +123,7 @@ export class Md5HashComponent implements OnDestroy {
 
             reader.onload = (e) => {
                 this.hashFromMd5File = (reader.result as string).split(' ')[0];
-                this.showSuccessNotification('Hash successfully extracted from md5 file');
+                this.notificationService.showSuccessNotification('Hash successfully extracted from md5 file');
             };
 
             reader.readAsText(md5File);
@@ -130,12 +132,12 @@ export class Md5HashComponent implements OnDestroy {
 
     public checkFileIntegrity(): void {
         if (!this.chosenFileNameToCheckIntegrity) {
-            this.showErrorNotification('Choose file to check data integrity');
+            this.notificationService.showErrorNotification('Choose file to check data integrity');
             return;
         }
 
         if (!this.chosenMd5FileName) {
-            this.showErrorNotification('Choose .md5 file');
+            this.notificationService.showErrorNotification('Choose .md5 file');
             return;
         }
 
@@ -157,28 +159,11 @@ export class Md5HashComponent implements OnDestroy {
                        `\nHashes are the same: ${res === this.hashFromMd5File}`;
 
                     this.cdr.detectChanges();
-                    this.showSuccessNotification('Hash for file computed successfully');
+                    this.notificationService.showSuccessNotification('Hash for file computed successfully');
                 },
                 error: (err) => {
-                    this.showErrorNotification(err.error.detail);
+                    this.notificationService.showErrorNotification(err.error.detail);
                 }
             });
-    }
-
-
-    private showSuccessNotification(message: string): void {
-        this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: message
-        });
-    }
-
-    private showErrorNotification(message: string): void {
-        this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: message
-        });
     }
 }

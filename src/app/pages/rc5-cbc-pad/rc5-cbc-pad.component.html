@@ -1,0 +1,38 @@
+<div class="container">
+    <div class="encrypt">
+        <label>
+            Enter password
+        </label>
+        <input pInputText
+               type="text"
+               [(ngModel)]="passwordToEncrypt"/>
+
+        <label>Choose file to encrypt</label>
+        <input
+            id="fileToEncrypt"
+            type="file"
+            (change)="onFileSelected($event)">
+
+        <p-button label="Encrypt"
+                  (onClick)="encryptFile()"/>
+    </div>
+
+
+    <div class="decrypt">
+        <label>
+            Enter password
+        </label>
+        <input pInputText
+               type="text"
+               [(ngModel)]="passwordToDecrypt"/>
+
+        <label>Choose file to decrypt</label>
+        <input
+            id="fileToDecrypt"
+            type="file"
+            (change)="onFileSelected($event)">
+
+        <p-button label="Decrypt"
+                  (onClick)="decryptFile()"/>
+    </div>
+</div>

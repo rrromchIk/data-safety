@@ -2,11 +2,16 @@
 <spinner/>
 <p-divider layout="horizontal"/>
 
-<p-accordion [activeIndex]="1">
+<p-accordion [activeIndex]="2">
     <p-accordionTab header="Linear comparison based random numbers generator">
         <app-pseudo-random-numbers/>
     </p-accordionTab>
     <p-accordionTab header="MD5 hashing algo">
         <app-md5-hash/>
     </p-accordionTab>
+    <p-accordionTab header="RC5 in CBC-PAD mode">
+        <app-rc5-cbc-pad/>
+    </p-accordionTab>
 </p-accordion>
+
+<p-toast/>

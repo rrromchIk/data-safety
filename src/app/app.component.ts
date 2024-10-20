@@ -10,6 +10,8 @@ import { AccordionModule } from "primeng/accordion";
 import { PseudoRandomNumbersComponent } from "./pages/pseudo-random-numbers/pseudo-random-numbers.component";
 import { SpinnerComponent } from "./shared/components/spinner/spinner.component";
 import {Md5HashComponent} from "./pages/md5-hash/md5-hash.component";
+import {Rc5CbcPadComponent} from "./pages/rc5-cbc-pad/rc5-cbc-pad.component";
+import {ToastModule} from "primeng/toast";
 
 @Component({
     selector: "app-root",
@@ -25,6 +27,8 @@ import {Md5HashComponent} from "./pages/md5-hash/md5-hash.component";
         PseudoRandomNumbersComponent,
         SpinnerComponent,
         Md5HashComponent,
+        Rc5CbcPadComponent,
+        ToastModule,
     ],
     templateUrl: "./app.component.html",
     styleUrl: "./app.component.scss",
